@@ -9,13 +9,12 @@ const FavoritesScreen = () => {
     const favorites = useSelector((state) => state.favorites.value);
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <FlatList
             style={{ margin: 10 }}
             data={favorites}
             renderItem={({ item }) => <Product style={styles.product} item={item} />}
             keyExtractor={(item) => item.id.toString()}
-            initialNumToRender={20}
             ListEmptyComponent={() => <Text style={styles.noData}>Geen favorieten</Text>}
         />
         </SafeAreaView>
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
+        backgroundColor: '#97BC62FF',
     },
     product: {
         flex: 1,
@@ -40,5 +40,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignSelf: 'center',
         marginTop: 100,
+        color: '#2C5F2D'
     },
 });

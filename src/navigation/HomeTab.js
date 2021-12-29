@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
 import FavoritesScreen from '../screens/FavoritesScreen';
@@ -11,59 +10,57 @@ const HomeTab = () => {
     const Tab = createBottomTabNavigator();
 
     return (
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={
+            {
+                tabBarActiveTintColor: 'yellow',
+                tabBarStyle: {
+                    backgroundColor: '#2C5F2D'
+                }
+            }} >
             <Tab.Screen
                 name="Home"
                 component={ProductStack}
                 options={
-                    { 
-                        tabBarIcon: ({focused}) => {
-                            const color = focused 
-                                ? 'red' 
-                                : 'black';
+                    {
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => {
+                            const color = focused
+                                ? 'yellow'
+                                : '#97BC62FF';
 
                             return <FontAwesome name='home' color={color} size={24} />
-                        },  
-                        headerShown: false ,
-                        tabBarActiveTintColor: 'red'
-                    }
-                } />
+                        },
+                    }} />
             <Tab.Screen
                 name="Favorieten"
                 component={FavoritesScreen}
                 options={
-                    { 
-                        tabBarIcon: ({focused}) => {
-                            const color = focused 
-                                ? 'red' 
-                                : 'black';
+                    {
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => {
+                            const color = focused
+                                ? 'yellow'
+                                : '#97BC62FF';
 
                             return <FontAwesome name='heart' color={color} size={24} />
-                        }, 
-                        headerShown: false ,
-                        tabBarActiveTintColor: 'red',
-                    }
-                } />
+                        },
+                    }} />
             <Tab.Screen
                 name="Profiel"
                 component={UserScreen}
                 options={
-                    { 
-                        tabBarIcon: ({focused}) => {
-                            const color = focused 
-                                ? 'red' 
-                                : 'black';
+                    {
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => {
+                            const color = focused
+                                ? 'yellow'
+                                : '#97BC62FF';
 
                             return <FontAwesome name='user' color={color} size={24} />
-                        }, 
-                        headerShown: false ,
-                        tabBarActiveTintColor: 'red'
-                    }
-                } />
+                        },
+                    }} />
         </Tab.Navigator>
     )
 }
 
-export default HomeTab
-
-const styles = StyleSheet.create({});
+export default HomeTab;

@@ -9,33 +9,54 @@ const Product = ({ item, navigation }) => {
 
     const [color, setColor] = useState('grey');
     const [icon, setIcon] = useState('heart-o');
-    const [isFavorite, setIsFavorite] = useState(false);
 
     const favorites = useSelector((state) => state.favorites.value);
 
     const dispatch = useDispatch();
 
+    // function for deciding if product is favorite
+    const getIsFavorite = () => {
+        const values = favorites.filter(e => e.id === item.id);
+        return values.length > 0;
+    }
+
+    // function for handling 'favorite' action
     const handleFavorite = () => {
-        if (favorites.indexOf(item) > -1) {
-            dispatch(remove(item.id));
-            setIcon('heart-o');
-            setColor('grey');
-            setIsFavorite(false);
-        }else{
-            dispatch(add(item));
-            setIcon('heart');
-            setColor('red');
-            setIsFavorite(true);
-        }
+
+        const isFavorite = getIsFavorite();
+
+        // perform action to store
+        isFavorite 
+            ? dispatch(remove(item.id))
+            : dispatch(add(item));
+
+        // set icon layout
+        setIconLayout();
     };
 
-    useEffect(() => {
-        if (favorites.indexOf(item) > -1) {
+    // function for changing layout icon of favorite
+    const setIconLayout = () => {
+
+        const isFavorite = getIsFavorite();
+
+        if (isFavorite) {
             setIcon('heart');
             setColor('red');
-            setIsFavorite(true);
+        }else{
+            setIcon('heart-o');
+            setColor('grey');
         }
+    }
+
+    // set icon when init
+    useEffect(() => {
+        setIconLayout();
     },[]);
+
+    // when favorites state changes => adjust icon
+    useEffect(() => {
+        setIconLayout();
+    },[favorites]);
 
     return (
         <View style={styles.container}>
@@ -43,8 +64,9 @@ const Product = ({ item, navigation }) => {
                 <FontAwesome style={styles.favorite} name={icon} color={color} size={23}  />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
+                // if navigation is undefined, we prevent navigating => favoritesScreen
                 if (navigation !== undefined) {
-                    navigation.navigate('Details', {item: item,color: color,icon: icon,isFavorite: isFavorite})
+                    navigation.navigate('Details', {item: item})
                 }
             }}>
                 <Image style={styles.image} source={{ uri: item.image }} />
@@ -64,7 +86,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         shadowOffset: { width: 5, height: 5, },
-        shadowColor: 'lightgrey',
+        shadowColor: '#2C5F2D',
         shadowOpacity: 0.8,
         shadowRadius: 5,
         margin: 5,

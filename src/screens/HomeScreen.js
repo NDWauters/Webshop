@@ -8,7 +8,6 @@ import { fetchProducts } from '../store/products/reducer';
 
 const HomeScreen = ({ navigation }) => {
 
-    const favorites = useSelector((state) => state.favorites.value);
     const productsState = useSelector((state) => state.products);
     const { data, isLoading } = productsState;
 
@@ -23,10 +22,10 @@ const HomeScreen = ({ navigation }) => {
     }, []);
 
     const searchProducts = () => {
-        let filteredProducts = [];
+        let filteredProducts = []; 
 
         filteredProducts = search.trim().length > 0 
-            ? products.filter(e => e.title.toLowerCase().includes(search.toLowerCase())) 
+            ? data.filter(e => e.title.toLowerCase().includes(search.toLowerCase())) 
             : data;
 
         setProducts(filteredProducts);
@@ -46,21 +45,22 @@ const HomeScreen = ({ navigation }) => {
                 value={search}
                 onSubmitEditing={searchProducts}
                 onClear={clearSearch}
-                containerStyle={{ backgroundColor: 'black', marginTop: 50 }}
-                inputContainerStyle={{ backgroundColor: 'white' }}
+                containerStyle={{ backgroundColor: '#2C5F2D', marginTop: 50 }}
+                inputContainerStyle={{ backgroundColor: '#97BC62FF' }}
+                searchIcon={{ color: '#2C5F2D' }}
+                clearIcon={{ color: '#2C5F2D' }}
+                placeholderTextColor='#2C5F2D'
             />
             {
                 isLoading
                     ? (
-                        <ActivityIndicator style={styles.loading} size='large' animating />
+                        <ActivityIndicator style={styles.loading} color='#2C5F2D' size='large' animating />
                     ) : (
                         <FlatList
                             style={{ margin: 10 }}
                             data={products}
                             renderItem={({ item }) => <Product style={styles.product} item={item} navigation={navigation} />}
                             keyExtractor={(item) => item.id.toString()}
-                            initialNumToRender={20}
-                            extraData={favorites.length}
                             ListEmptyComponent={() => <Text style={styles.noData}>Geen Producten</Text>}
                         />
                     )}
@@ -72,7 +72,8 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#97BC62FF'
     },
     product: {
         flex: 1,
@@ -82,10 +83,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 10
+        marginTop: 100
     },
     searchbar:{
-        color: 'black'
+        color: '#2C5F2D',
     },
     loading:{
         flex: 1,
