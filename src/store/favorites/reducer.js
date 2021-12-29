@@ -8,8 +8,6 @@ const favoritesReducer = createSlice({
     reducers: { 
         add(state,action){
             state.value.push(action.payload);
-
-            console.log(state.value);
         },
         remove(state,action){
             for (let i = 0; i < state.value.length; i++) {
@@ -19,8 +17,6 @@ const favoritesReducer = createSlice({
                     state.value.splice(i,1);
                 }
             }
-
-            console.log(state.value);
         },
         clear(state, action){
             state.value = [];
