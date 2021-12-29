@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { ActivityIndicator, Text } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { AuthUserStateContext } from '../contexts/AuthUserProvider';
 import AuthStack from './AuthStack';
-import ProductTab from './ProductTab';
+import HomeTab from './HomeTab';
 
 const RootNavigator = () => {
 
@@ -14,7 +14,7 @@ const RootNavigator = () => {
     }else{
         return (
             <NavigationContainer>
-                { user ? <ProductTab /> : <AuthStack/> }
+                { user ? <HomeTab /> : <AuthStack/> }
             </NavigationContainer>
          )
     }

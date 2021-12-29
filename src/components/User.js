@@ -1,18 +1,25 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Platform } from 'react-native';
 import { signOut } from '@firebase/auth';
 import { Button } from 'react-native-elements';
 import { AuthUserStateContext } from '../contexts/AuthUserProvider';
 import { auth } from '../firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { clear } from '../store/favorites/reducer';
 
 const User = () => {
 
     const { user } = useContext(AuthUserStateContext);
 
+    const dispatch = useDispatch();
+
     const handleLogout = async () => {
         try {
-            await signOut(auth);
+                dispatch(clear())
+                await AsyncStorage.clear();
+                await signOut(auth);
         } catch (error) {
             console.log(error);
         }

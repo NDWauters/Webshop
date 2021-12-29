@@ -8,18 +8,25 @@ const favoritesReducer = createSlice({
     reducers: { 
         add(state,action){
             state.value.push(action.payload);
+
+            console.log(state.value);
         },
         remove(state,action){
             for (let i = 0; i < state.value.length; i++) {
                 const element = state.value[i];
 
-                if (element === action.payload) {
+                if (element.id === action.payload) {
                     state.value.splice(i,1);
                 }
             }
-        } 
+
+            console.log(state.value);
+        },
+        clear(state, action){
+            state.value = [];
+        }
      }
 });
 
 export const { reducer, actions } = favoritesReducer;
-export const { add, remove } = actions;
+export const { add, remove, clear } = actions;

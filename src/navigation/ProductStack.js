@@ -3,16 +3,16 @@ import React from 'react';
 import DetailsScreen from '../screens/DetailsScreen';
 import HomeScreen from '../screens/HomeScreen';
 
-const HomeStack = () => {
+const ProductStack = () => {
 
     const Stack = createStackNavigator();
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='HomeScreen' component={HomeScreen} />
-            <Stack.Screen name='DetailsScreen' component={DetailsScreen} />
+        <Stack.Navigator>
+            <Stack.Screen name='Producten' component={HomeScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name='Details' component={DetailsScreen}/>
         </Stack.Navigator>
     )
 }
 
-export default HomeStack;
+export default ProductStack;

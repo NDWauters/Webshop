@@ -16,13 +16,13 @@ const Product = ({ item, navigation }) => {
     const dispatch = useDispatch();
 
     const handleFavorite = () => {
-        if (favorites.indexOf(item.id) > -1) {
+        if (favorites.indexOf(item) > -1) {
             dispatch(remove(item.id));
             setIcon('heart-o');
             setColor('grey');
             setIsFavorite(false);
         }else{
-            dispatch(add(item.id));
+            dispatch(add(item));
             setIcon('heart');
             setColor('red');
             setIsFavorite(true);
@@ -30,7 +30,7 @@ const Product = ({ item, navigation }) => {
     };
 
     useEffect(() => {
-        if (favorites.indexOf(item.id) > -1) {
+        if (favorites.indexOf(item) > -1) {
             setIcon('heart');
             setColor('red');
             setIsFavorite(true);
@@ -42,7 +42,11 @@ const Product = ({ item, navigation }) => {
             <TouchableOpacity onPress={() => handleFavorite()}>
                 <FontAwesome style={styles.favorite} name={icon} color={color} size={23}  />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', {item: item,color: color,icon: icon,isFavorite: isFavorite})}>
+            <TouchableOpacity onPress={() => {
+                if (navigation !== undefined) {
+                    navigation.navigate('Details', {item: item,color: color,icon: icon,isFavorite: isFavorite})
+                }
+            }}>
                 <Image style={styles.image} source={{ uri: item.image }} />
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.price}>€ {item.price}</Text>
