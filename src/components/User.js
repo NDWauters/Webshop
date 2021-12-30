@@ -1,14 +1,19 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, ActivityIndicator, View, Text } from 'react-native';
 import { signOut } from '@firebase/auth';
 import { AuthUserStateContext } from '../contexts/AuthUserProvider';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { clear } from '../store/favorites/reducer';
+import { Button } from 'react-native-elements';
+import { doc, getDoc } from "firebase/firestore";
 
 const User = () => {
+
+    const [userInfo, setUserInfo] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const { user } = useContext(AuthUserStateContext);
 
@@ -16,26 +21,50 @@ const User = () => {
 
     const handleLogout = async () => {
         try {
-                dispatch(clear())
-                await AsyncStorage.clear();
-                await signOut(auth);
+            dispatch(clear())
+            await AsyncStorage.clear();
+            await signOut(auth);
         } catch (error) {
             console.log(error);
         }
     }
 
+    useEffect(async () => {
+
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            setUserInfo(docSnap.data());
+            setIsLoading(false);
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.textContainer}>
-                <Text>UID: {user.uid}</Text>
-                <Text>Email: {user.email}</Text>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => handleLogout()}>
-                    <Text style={styles.buttonText} >Uitloggen</Text>
-                </TouchableOpacity>
-            </View>
+            {
+                isLoading
+                    ? <ActivityIndicator size='large' animating />
+                    :
+                    <View style={{ flex: 1 }}>
+                        <View style={styles.textContainer}>
+                            <Text>ID: {user.uid}</Text>
+                            <Text>Naam: {userInfo.name}</Text>
+                            <Text>Leeftijd: {userInfo.age}</Text>
+                            <Text>Plaats: {userInfo.place}</Text>
+                            <Text>Email: {userInfo.email}</Text>
+                        </View>
+                        <Button
+                            title='Uitloggen'
+                            onPress={() => handleLogout()}
+                            titleStyle={{ fontSize: 16, textAlign: 'right', color: 'yellow' }}
+                            buttonStyle={{ backgroundColor: '#2C5F2D' }}
+                        />
+                    </View>
+            }
         </SafeAreaView>
     )
 }
@@ -66,19 +95,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 20,
     },
-    button: {
+    buttonText: {
         flex: 1,
-        backgroundColor: '#2C5F2D',
         alignSelf: 'center',
-        paddingTop: 10,
-        paddingBottom: 10,
-        width: '80%',
-        borderRadius: 30,
-    },
-    buttonText: { 
-        flex: 1,
-        alignSelf: 'center', 
-        color: 'yellow' ,
+        color: 'yellow',
         fontSize: 22,
     }
 })

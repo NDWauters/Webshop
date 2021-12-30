@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,20 +12,19 @@ const HomeScreen = ({ navigation }) => {
     const { data, isLoading } = productsState;
 
     const [search, setSearch] = useState('');
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState(data);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchProducts());
-        setProducts(data)
     }, []);
 
     const searchProducts = () => {
-        let filteredProducts = []; 
+        let filteredProducts = [];
 
-        filteredProducts = search.trim().length > 0 
-            ? data.filter(e => e.title.toLowerCase().includes(search.toLowerCase())) 
+        filteredProducts = search.trim().length > 0
+            ? data.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
             : data;
 
         setProducts(filteredProducts);
@@ -38,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <SearchBar 
+            <SearchBar
                 style={styles.searchbar}
                 placeholder='Zoek naar product..'
                 onChangeText={(value) => setSearch(value)}
@@ -50,11 +49,16 @@ const HomeScreen = ({ navigation }) => {
                 searchIcon={{ color: '#2C5F2D' }}
                 clearIcon={{ color: '#2C5F2D' }}
                 placeholderTextColor='#2C5F2D'
+                disabled={isLoading}
             />
             {
                 isLoading
                     ? (
-                        <ActivityIndicator style={styles.loading} color='#2C5F2D' size='large' animating />
+                        <ActivityIndicator
+                            style={styles.loading}
+                            color='#2C5F2D'
+                            size='large'
+                            animating />
                     ) : (
                         <FlatList
                             style={{ margin: 10 }}
@@ -62,7 +66,10 @@ const HomeScreen = ({ navigation }) => {
                             renderItem={({ item }) => <Product style={styles.product} item={item} navigation={navigation} />}
                             keyExtractor={(item) => item.id.toString()}
                             ListEmptyComponent={() => <Text style={styles.noData}>Geen Producten</Text>}
+                            removeClippedSubviews={true}
+                            initialNumToRender={3}
                         />
+
                     )}
         </View>
     )
@@ -83,12 +90,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 100
+        marginTop: 100,
+        color: '#2C5F2D'
     },
-    searchbar:{
-        color: '#2C5F2D',
+    searchbar: {
+        color: 'black',
     },
-    loading:{
+    loading: {
         flex: 1,
     }
 });
