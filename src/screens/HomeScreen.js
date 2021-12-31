@@ -50,6 +50,7 @@ const HomeScreen = ({ navigation }) => {
                 clearIcon={{ color: '#2C5F2D' }}
                 placeholderTextColor='#2C5F2D'
                 disabled={isLoading}
+                returnKeyType='search'
             />
             {
                 isLoading

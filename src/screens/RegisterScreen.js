@@ -1,12 +1,12 @@
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import { Formik } from 'formik';
-import React, { useRef } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Keyboard } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { auth, db } from '../firebase';
-import * as Yup from 'yup';
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore";
+import registerValidationScheme from '../validationSchemes/registerValidationScheme';
 
 const RegisterScreen = () => {
 
@@ -19,6 +19,10 @@ const RegisterScreen = () => {
     const refPassword = useRef(null);
     const refRepeatPassword = useRef(null);
 
+    // error if email already exists
+    const [errorRegister, setErrorRegister] = useState('');
+
+    // function for register action
     const handleRegister = async (values) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
@@ -28,45 +32,33 @@ const RegisterScreen = () => {
                 age: values.age,
                 place: values.place,
                 email: values.email,
-              });
+            });
         } catch (error) {
+            if (error.code == 'auth/email-already-in-use') {
+                setErrorRegister('Emailadres is al in gebruik.')
+            }else{
+                setErrorRegister('Registratie is mislukt.')
+            }
             console.log(error);
         }
     };
 
-    const registerValidationSchema = Yup.object().shape({
-        name: Yup
-            .string()
-            .required('Volledige Naam is een verplicht veld.'),
-        age: Yup
-            .number(),
-        place: Yup
-            .string(),
-        email: Yup
-            .string()
-            .email('Vul een geldig emailadres in.')
-            .required('Emailadres is een verplicht veld.'),
-        password: Yup
-            .string()
-            .min(7, ({ min }) => `Wachtwoord moet minstens ${min} karakters bevatten.`)
-            .required('Wachtwoord is een verplicht veld.'),
-        repeatPassword: Yup
-            .string()
-            .required('Herhaal wachtwoord is een verplicht veld.')
-            .oneOf([Yup.ref('password'), null], 'Wachtwoord komt niet overeen.'),
-    });
-
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Registeer</Text>
+            <Text style={styles.title}>Registreer</Text>
             <Formik
-                validationSchema={registerValidationSchema}
+                validationSchema={registerValidationScheme}
                 initialValues={{ name: '', email: '', password: '', repeatPassword: '', place: '', age: '' }}
                 onSubmit={values => handleRegister(values)}
             >
                 {
                     ({ handleChange, handleSubmit, values, errors }) => (
-                        <>
+                        // avoid blocking input fields with keyboard
+                        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
+                            {
+                                // show error here if register fails
+                                errorRegister.length > 0 ? <Text style={styles.errorRegister}>{errorRegister}</Text> : null
+                            }
                             <Input
                                 name='name'
                                 placeholder='Volledige naam'
@@ -77,25 +69,23 @@ const RegisterScreen = () => {
                                 placeholderTextColor='#2C5F2D'
                                 returnKeyType='next'
                                 onSubmitEditing={() => refAge.current.focus()}
+                                errorMessage={errors.name ? errors.name : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.name && <Text style={styles.error}>{errors.name}</Text>
-                            }
                             <Input
                                 name='age'
                                 ref={refAge}
-                                keyboardType='default'
+                                keyboardType='number-pad'
                                 placeholder='Leeftijd'
                                 value={values.age}
                                 onChangeText={handleChange('age')}
                                 inputContainerStyle={{ borderBottomColor: '#2C5F2D' }}
                                 placeholderTextColor='#2C5F2D'
-                                returnKeyType='next'
+                                returnKeyType={Platform.OS === "ios" ? "done" : "next"}
                                 onSubmitEditing={() => refPlace.current.focus()}
+                                errorMessage={errors.age ? errors.age : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.age && <Text style={styles.error}>{errors.age}</Text>
-                            }
                             <Input
                                 name='place'
                                 placeholder='Plaats'
@@ -106,10 +96,9 @@ const RegisterScreen = () => {
                                 placeholderTextColor='#2C5F2D'
                                 returnKeyType='next'
                                 onSubmitEditing={() => refEmail.current.focus()}
+                                errorMessage={errors.place ? errors.place : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.place && <Text style={styles.error}>{errors.place}</Text>
-                            }
                             <Input
                                 name='email'
                                 placeholder='Emailadres'
@@ -121,10 +110,9 @@ const RegisterScreen = () => {
                                 placeholderTextColor='#2C5F2D'
                                 returnKeyType='next'
                                 onSubmitEditing={() => refPassword.current.focus()}
+                                errorMessage={errors.email ? errors.email : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.email && <Text style={styles.error}>{errors.email}</Text>
-                            }
                             <Input
                                 name='password'
                                 placeholder='Wachtwoord'
@@ -136,10 +124,9 @@ const RegisterScreen = () => {
                                 placeholderTextColor='#2C5F2D'
                                 returnKeyType='next'
                                 onSubmitEditing={() => refRepeatPassword.current.focus()}
+                                errorMessage={errors.password ? errors.password : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.password && <Text style={styles.error}>{errors.password}</Text>
-                            }
                             <Input
                                 name='repeatPassword'
                                 placeholder='Herhaal wachtwoord'
@@ -151,25 +138,24 @@ const RegisterScreen = () => {
                                 placeholderTextColor='#2C5F2D'
                                 returnKeyType='done'
                                 onSubmitEditing={() => Keyboard.dismiss()}
+                                errorMessage={errors.repeatPassword ? errors.repeatPassword : null}
+                                errorStyle={styles.error}
                             />
-                            {
-                                errors.repeatPassword && <Text style={styles.error}>{errors.repeatPassword}</Text>
-                            }
                             <View style={{ alignSelf: 'flex-end' }}>
                                 <Button
                                     title='Inloggen'
-                                    type='clear' titleStyle={{ fontSize: 14, textAlign: 'right' }}
-                                    titleStyle={{ fontSize: 14, textAlign: 'right', color: '#2C5F2D' }}
+                                    type='clear'
+                                    titleStyle={{ fontSize: 16, textAlign: 'right', color: '#2C5F2D', marginRight: 10, marginBottom: 5 }}
                                     onPress={() => navigation.navigate('Login')}
                                 />
                             </View>
                             <Button
                                 title='Registreer'
-                                buttonStyle={{ backgroundColor: '#2C5F2D' }}
+                                buttonStyle={{ backgroundColor: '#2C5F2D', marginLeft: 10, marginRight: 10 }}
                                 titleStyle={{ color: 'yellow' }}
                                 onPress={handleSubmit}
                             />
-                        </>
+                        </KeyboardAvoidingView>
                     )
                 }
             </Formik>
@@ -194,9 +180,14 @@ const styles = StyleSheet.create({
         color: '#2C5F2D'
     },
     error: {
+        fontSize: 15,
+        color: 'red'
+    },
+    errorRegister: {
         marginLeft: 10,
         marginBottom: 10,
         fontSize: 15,
-        color: 'red'
+        color: 'red',
+        alignSelf: 'center'
     }
 });
