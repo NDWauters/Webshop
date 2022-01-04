@@ -23,9 +23,9 @@ const LoginScreen = () => {
         try {
             await signInWithEmailAndPassword(auth, values.email, values.password);
         } catch (error) {
-            setErrorLogin('Inloggen is mislukt.')
+            setErrorLogin('Inloggen is mislukt.');
+            console.log(error);
         }
-        console.log(error);
     }
 
     return (
