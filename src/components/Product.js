@@ -7,7 +7,7 @@ import { add, remove } from '../store/favorites/reducer';
 
 const Product = ({ item, navigation }) => {
 
-    const [color, setColor] = useState('grey');
+    const [color, setColor] = useState('black');
     const [icon, setIcon] = useState('heart-o');
 
     const favorites = useSelector((state) => state.favorites.value);
@@ -44,7 +44,7 @@ const Product = ({ item, navigation }) => {
             setColor('red');
         }else{
             setIcon('heart-o');
-            setColor('grey');
+            setColor('black');
         }
     }
 
@@ -60,9 +60,7 @@ const Product = ({ item, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => handleFavorite()}>
-                <FontAwesome style={styles.favorite} name={icon} color={color} size={23}  />
-            </TouchableOpacity>
+            <FontAwesome style={styles.favorite} name={icon} color={color} size={23} onPress={handleFavorite}  />
             <TouchableOpacity onPress={() => {
                 // if navigation is undefined, we prevent navigating => favoritesScreen
                 if (navigation !== undefined) {

@@ -10,7 +10,7 @@ const DetailsScreen = ({ route }) => {
 
     const favorites = useSelector((state) => state.favorites.value);
 
-    const [color, setColor] = useState('grey');
+    const [color, setColor] = useState('black');
     const [icon, setIcon] = useState('heart-o');
 
     const dispatch = useDispatch();
@@ -45,7 +45,7 @@ const DetailsScreen = ({ route }) => {
             setColor('red');
         }else{
             setIcon('heart-o');
-            setColor('grey');
+            setColor('black');
         }
     }
 
@@ -77,9 +77,6 @@ const DetailsScreen = ({ route }) => {
                 }}>
                 <FontAwesome style={styles.favorite} name={icon} color={color} size={23}/>
             </TouchableOpacity>
-            <View style={{ flex: 2 }}>
-                { /* spacing */ }
-            </View>
         </View>
     )
 }
@@ -94,7 +91,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#97BC62FF'
     },
     section1: {
-        flex: 4,
+        flex: 2,
         backgroundColor: 'white'
     },
     section2: {
@@ -103,7 +100,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     section3: {
-        flex: 1,
+        flex: 2,
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         marginLeft: 10,
@@ -113,9 +110,6 @@ const styles = StyleSheet.create({
     section4: {
         flex: 0.5,
         flexDirection: 'column',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 30,
         alignSelf: 'center',
         justifyContent: 'center',
         marginTop: 50
@@ -132,9 +126,9 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        height: 150,
         width: '90%',
         marginBottom: 10,
+        marginTop: 10,
         resizeMode: 'contain',
         alignSelf: 'center',
         backgroundColor: 'white',
@@ -152,7 +146,7 @@ const styles = StyleSheet.create({
     },
     description: {
         flex: 1,
-        fontSize: 15
+        fontSize: 14
     },
     descriptionTitle: {
         fontWeight: 'bold',

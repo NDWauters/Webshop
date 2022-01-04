@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 import Product from '../components/Product';
 
@@ -11,7 +11,7 @@ const FavoritesScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
-            style={{ margin: 10 }}
+            style={styles.list}
             data={favorites}
             renderItem={({ item }) => <Product style={styles.product} item={item} />}
             keyExtractor={(item) => item.id.toString()}
@@ -41,5 +41,10 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 100,
         color: '#2C5F2D'
+    },
+    list: {
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: Platform.OS === 'ios' ? 0 : 30
     },
 });

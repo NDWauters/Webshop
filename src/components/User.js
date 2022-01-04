@@ -14,17 +14,21 @@ const User = () => {
 
     useEffect(async () => {
 
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        try {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            setUserInfo(docSnap.data());
-            setIsLoading(false);
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-            setUserInfo(null);
-            setIsLoading(false);
+            if (docSnap.exists()) {
+                setUserInfo(docSnap.data());
+                setIsLoading(false);
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+                setUserInfo(null);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
         }
     }, []);
 
@@ -34,7 +38,7 @@ const User = () => {
                 isLoading
                     ? <ActivityIndicator color='#2C5F2D' size='large' animating />
                     : userInfo == null // if admin => no data in db => only show email
-                        ?  
+                        ?
                         <View style={styles.textContainer}>
                             <Text style={styles.text}>Email: {user.email}</Text>
                         </View>
